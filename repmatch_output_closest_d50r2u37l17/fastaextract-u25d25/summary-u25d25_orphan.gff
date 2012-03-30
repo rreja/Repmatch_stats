@@ -1,0 +1,5 @@
+chr7	repmatch	.	24	25	107.035714286	.	.	median_distance=29;value_sum=221.0;replicates=3
+chr3	repmatch	.	316595	316596	11.9802018634	.	.	median_distance=30;value_sum=27.0;replicates=2
+chr9	repmatch	.	21	22	20.25	.	.	median_distance=25;value_sum=71.0;replicates=3
+chr12	repmatch	.	21	22	42.4551724138	.	.	median_distance=26;value_sum=285.0;replicates=3
+chr15	repmatch	.	1091272	1091273	2015.50344828	.	.	median_distance=23;value_sum=4161.0;replicates=3

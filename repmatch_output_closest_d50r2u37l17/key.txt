@@ -1,0 +1,4 @@
+id	filename	median read count
+1	/8_Lab_startup/z-PeconicGenomics/1_Deliverable/2_Sample_output/genetrack_s5e10F1/0stdev_grep-v/cwpair_output_mode_f0u0d100b3/_repmatch/S_Reb1-rep2_s5e10F1_stdev.gff	161.0
+2	/8_Lab_startup/z-PeconicGenomics/1_Deliverable/2_Sample_output/genetrack_s5e10F1/0stdev_grep-v/cwpair_output_mode_f0u0d100b3/_repmatch/S_Reb1-rep3_s5e10F1stdev.gff	72.5
+3	/8_Lab_startup/z-PeconicGenomics/1_Deliverable/2_Sample_output/genetrack_s5e10F1/0stdev_grep-v/cwpair_output_mode_f0u0d100b3/_repmatch/S_Reb1-rep4_s5e10F1stdev.gff	56.0
