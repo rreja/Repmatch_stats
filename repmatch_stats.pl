@@ -107,6 +107,9 @@ sub help_message {
 
     Example:
       perl repmatch_stats.pl -k  /usr/local/folder/ -i /folder1/peakpairs/
+      
+    Output:
+    Produces a "output_repmatch_stats.tab" file in the folder that contains the  key.txt and orphan.txt files.
   
   };
   exit;
