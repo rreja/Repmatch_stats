@@ -8,13 +8,15 @@ getopt('ki',\%opt);
 &help_message if (defined $opt{h});
 
 # Ask the user to input the file directory which contains the key.txt, orphan.txt and summary.txt files
-my $keypath = $opt{'k'};;
+my $keypath = $opt{'k'};
+$keypath = check_dir($keypath);
 #Ask the user to input the directory which contains the S_* files.
-my $pp_path = $opt{'i'};;
+my $pp_path = $opt{'i'};
+$pp_path = check_dir($pp_path);
 
 open IN, $keypath."key.txt" || die "key.txt file not found. Please check your path has '/' at the end";
 open IN3, $keypath."orphan.txt" || die "orphan.txt file not found. Please check your path has '/' at the end";
-open OUT, ">".$keypath."output_repmatch_stats.tab" || die "Output file not found";
+open OUT, ">".$keypath."repmatch_stats.txt" || die "Output file not found";
 
 print OUT "id\tFilename\t#peak-pair\t#peak-pair_in_replicate\t%_top1%tile_peak-pairs-in-replicate\t%_top5%tile_peak-pairs-in-replicate\t";
 print OUT "%_top10%tile_peak-pairs-in-replicate\t%_top25%tile_peak-pairs-in-replicate\t%_top50%tile_peak-pairs-in-replicate\t";
@@ -92,6 +94,16 @@ sub find_quantile{
 }
 
 
+sub check_dir{
+    my $dir = shift;
+    my $tmp = substr($dir,-1,1);
+    if($tmp eq "/"){
+        return($dir);
+    }
+    else{
+        return($dir."/");
+    }
+}
 
 
 
@@ -101,15 +113,15 @@ sub help_message {
     Contact: Rohit Reja <rzr142\@psu.edu>
     Usage:   repmatch_stats.pl -k <path_to_key.txt_file> -i <path_to_S_*_files>
 
-    Options: -k <path1>     path to the folder with key.txt and orphan.txt file. Path should end with a '/' 
-             -i <path2>     path to the folder with S_*.gff files. Path should end with a '/' 
+    Options: -k <path1>     path to the folder with key.txt and orphan.txt file. 
+             -i <path2>     path to the folder with S_*.gff files. 
              -h             help
 
     Example:
-      perl repmatch_stats.pl -k  /usr/local/folder/ -i /folder1/peakpairs/
+      perl repmatch_stats.pl -k  /usr/local/folder -i /folder1/peakpairs
       
     Output:
-    Produces a "output_repmatch_stats.tab" file in the folder that contains the  key.txt and orphan.txt files.
+    Produces a "repmatch_stats.tab" file in the folder that contains the  key.txt and orphan.txt files.
   
   };
   exit;
