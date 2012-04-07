@@ -1,19 +1,17 @@
-Peak-pair Statistics
+Replicate-match Statistics
 ================
 
 Introduction
 -------------
 
-The scripts in this repository can be used to perform some basic statistics on the peak-pairs. The peak-pair file is the output file obtained by running cw-peak-pair python script on the peak call file.
+The scripts in this repository can be used to perform some basic statistics on the replicate-match files. The replicate-match files are the output file obtained by running rep-match python script on the peak-pair file.
 
-The basic operations include calculating a) the mean and median of peak-pair occupancy, b) peak-pair mode, c) Counting the number of orphans, d) Fraction of all mapped reads that reside in peak-pairs and, e) Signal to noise ratio in the dataset.
+The basic operations include counting a) peak-pairs in replicates and increasing window quantile scan of peak-pairs in replicates.
 
 Requirements
 ------------
 
 - The script only requires Perl_ (5 or higher) to run.
-- The input tag file should have the idx/tab extension and should be of the form (chr,index,forward,reverse,value(optional column)).
-- The peak-pair files should be in the standard gff format.
 
 
 THE SCRIPT WILL BREAK IF:
@@ -23,9 +21,7 @@ THE SCRIPT WILL BREAK IF:
 
     $ perl -p -e 's/^M/\n/g;' <file_with_excel_char> > <new_file>
 
-- The peak-pair file should start with a "S_" and should end with a "_sXeXFX.gff", where X could be any number, ex: "_s5e20F10.gff".
-- The orphan file should start with a "O_".
-- The names of all S_* and O_* files should contain the index file name in it. For ex. if index file name is "Reb1-rep2.idx", than all the S_* and O_* files should be like S_XXX_Reb1-rep2_XXX_sXe20F1.gff, where X is any character.
+- If you change the name of the files "key.txt" and "orphan.txt", that are present in the folder produced by the repmatch script. 
 
 
 Installing and Running the scripts
@@ -33,58 +29,42 @@ Installing and Running the scripts
 
 Unpack the source code archive. The folder contains the following::
 
--  robust_peak_pair_stats.pl: Script for basic statistics and an increasing-window quantile scan for signal:noise. 
--  pp_stats_5pt_scan.pl: Script for basic statistics and a fixed-window quantile scan for signal:noise.
+-  repmatch_stats.pl: Script for basic statistics. 
 -  README.rst: Readme file
--  Sample data: which includes (two index files: Reb1-rep2.idx and Reb1-rep3.idx) and folder (genetrack_s5e10F1) containing peak calls and a subfolder (cwpair_output_mode_f0u0d100b3) containing all the S_*, D_*, O_*, and P_*, peak-pair files
+-  Sample data: which includes (three peak-pair files: S_Reb1-rep2_s5e10F1_stdev.gff, S_Reb1-rep3_s5e10F1stdev.gff, S_Reb1-rep4_s5e10F1stdev.gff and a folder (repmatch_output_closest_d50r2u37l17) containing the output of repmatch script, that contains the primary files "key.txt" and "orphan.txt" used by the script.
 
 
-If you wish to get the signal:noise ratio infomation using increasing-window quantile scan (for ex. top 1%, top 5%, top 10% etc) than use the following script::
+If you get more information on option then type this::
 
-    $ perl  robust_peak_pair_stats.pl -h
-
-Do a test run of the script by typing::
-
-$ perl robust_peak_pair_stats.pl -i  ./ -d genetrack_s5e10F1/cwpair_output_mode_f0u0d100b3/ -g sg07
-
-The folder should now contain a "peak_pair_stats.txt" file. This means that script runs fine on your system.
-
-if you wish to get the signal:noise information using fixed-width quantile scan (for ex. 0-5 %, 5-10 %, 10- 15 %) than use the following script::
-
-    $ perl pp_stats_5pt_scan.pl -h
+    $ perl  repmatch_stats.pl -h
 
 Do a test run of the script by typing::
 
-    $  perl pp_stats_5pt_scan.pl -i  ./ -d genetrack_s5e10F1/cwpair_output_mode_f0u0d100b3/ -g NA -s 160000000 -p 10
+$ perl repmatch_stats.pl -k  /usr/local/folder -i /folder1/peakpairs
 
-The folder should now contain, a "peak_pair_stats.txt" and a "signal2noise_qt_scan.txt" file.
-This means that script runs fine on your system.
+The folder should now contain a "repmatch_stats.txt" file. This means that script runs fine on your system.
+
 
 
 Output
 ------
 
-All output files will be produced in the folder that contain S_* and O_* files.
+All output files will be produced in the folder that contain "key.txt" and "orphan.txt" files.
 Following output files will be generated:
 
-- The script "pp_stats_5pt_scan.pl" produces an extra  file named: "signal2noise_qt_scan.txt", which will contain the quantile range and the signal to noise ratio in a tab delimited format.
 
-- "peak_pair_stats.txt" containing the summary for each input file. The summary includes the following information::
+- "repmatch_stats.txt" containing the summary for each input file. The summary includes the following information::
 
     - Filename
-    - Peak-pair mode
-    - Peaks in peak pairs
-    - Orphan peaks
-    - Median peak-pair occupancy
-    - Mean peak-pair occupancy
-    - FRIP (Fraction of all mapped reads in peak-pairs) 
-    - top_1pt_signal:noise [only in the output of "robust_peak_pair_stats.pl"]
-    - top_5pt_signal:noise [only in the output of "robust_peak_pair_stats.pl"]
-    - top_10pt_signal:noise [only in the output of "robust_peak_pair_stats.pl"]
-    - top_25pt_signal:noise [only in the output of "robust_peak_pair_stats.pl"]
-    - top_50pt_signal:noise [only in the output of "robust_peak_pair_stats.pl"]
-    - top_75pt_signal:noise [only in the output of "robust_peak_pair_stats.pl"]
-    - top_100pt_signal:noise [only in the output of "robust_peak_pair_stats.pl"]
+    - number of Peak-pair 
+    - number of peak-pair in relicates. 
+    - top_1pt_peak-pairs_in_replicates.
+    - top_5pt_peak-pairs_in_replicates. 
+    - top_10pt_peak-pairs_in_replicates.
+    - top_25pt_peak-pairs_in_replicates.
+    - top_50pt_peak-pairs_in_replicates.
+    - top_75pt_peak-pairs_in_replicates.
+    - top_100pt_peak-pairs_in_replicates.
   
    
 
