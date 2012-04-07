@@ -1,81 +1,72 @@
-Peak Statistics
+Replicate-match Statistics
 ================
 
 Introduction
 -------------
 
-The scriptis in this repository can be used to perform some basic statistics
-on the "peak calls". The "peak calls" file is the output file obtained by running
-genetrack program on the index/raw tag file.
+The scripts in this repository can be used to perform some basic statistics on the replicate-match files. The replicate-match files are the output file obtained by running rep-match python script on the peak-pair file.
 
-The basic operations include seperating the singleton and non-singelton peaks and
-then calculating the median and average of tag counts and standard deviations.
-
+The basic operations include counting a) peak-pairs in replicates and increasing window quantile scan of peak-pairs in replicates.
 
 Requirements
 ------------
 
-- The software requires only Perl_ (5 or higher) to run.
-- The input file should be in standard Gff_ format
+- The script only requires Perl_ (5 or higher) to run.
 
-Installation
+
+THE SCRIPT WILL BREAK IF:
+------------------------
+
+- The files have excel ^M character in it. For sanity check, open your file in terminal, to see if you can see ^M character in your file. In case, you find ^M character in your file, use the following command to remove it::
+
+    $ perl -p -e 's/^M/\n/g;' <file_with_excel_char> > <new_file>
+
+- If you change the name of the files "key.txt" and "orphan.txt", that are present in the folder produced by the repmatch script. 
+
+
+Installing and Running the scripts
 ------------
 
-Unpack the source code archive. The folder contains the followng
+Unpack the source code archive. The folder contains the following::
 
-- `peak_statistics.pl`: Script for basic statistics when running on a single file
-- `peak_statistics_batch.sh` : Script for batch processing
-- `README.rst` : Readme file
-- `sample.gff`: The sample input file to test the scripts.
+-  repmatch_stats.pl: Script for basic statistics. 
+-  README.rst: Readme file
+-  Sample data: which includes (three peak-pair files: S_Reb1-rep2_s5e10F1_stdev.gff, S_Reb1-rep3_s5e10F1stdev.gff, S_Reb1-rep4_s5e10F1stdev.gff and a folder (repmatch_output_closest_d50r2u37l17) containing the output of repmatch script, that contains the primary files "key.txt" and "orphan.txt" used by the script.
 
-When running the script on a single input gff file:
 
-- Open the file `peak_statistics.pl` in  any text editor of your choice.
-- Comment out the line 18 by putting a "#" in front of it.
-- Uncomment the lines 21 and 22 by removing the "#" in front of them.
-- You are ready to use the file. How to run the script from your terminal?
+If you get more information on option then type this::
 
-- Type the following:
+    $ perl  repmatch_stats.pl -h
 
-    $ perl  peak_statistics.pl  <path_to_your_input_file>
-    $ #for example: peak_statistics.pl /Users/input/sample.gff
+Do a test run of the script by typing::
 
-An output file with  '_NoS.gff' at the end will be generated, that will
-contain all the non-singelton peaks into it (The peaks whose standard deviation
-is greater than 0). Also, some statistic summary about the file would be displayed
-on the screen. Each column (in the order of display)  contains the following:
+$ perl repmatch_stats.pl -k  /usr/local/folder -i /folder1/peakpairs
+
+The folder should now contain a "repmatch_stats.txt" file. This means that script runs fine on your system.
+
+
+
+Output
+------
+
+All output files will be produced in the folder that contain "key.txt" and "orphan.txt" files.
+Following output files will be generated:
+
+
+- "repmatch_stats.txt" containing the summary for each input file. The summary includes the following information::
+
     - Filename
-    - Percentage of mapped reads
-    - Percentage of uniquely mapped reads
-    - Total non-singelton peaks
-    - Total singelton peaks
-    - Median of tag counts for non-singleton peaks
-    - Mean of tag counts for non-singleton peaks
-    - Median fuzziness (standard deviation) for non-singleton peaks
-    - Mean fuzziness (standard deviation) for non-singleton peaks
-
-When batch processing:
-
-- For batch processing DO NOT modify 'peak_statistics.pl' file
-- To run the batch script:
-
-    $./peak_statistics_batch.sh # will give the instruction on how to run the file
-    $./peak_statistics_batch.sh -i <path_to_directory>
-    $ # for example: ./peak_statistics_batch.sh  /Users/input/
-
-Remember, when giving the path to the directory containing files, always give the
-path with "/" at the end. For ex: "/Users/input/" is acceptable but "/Users/input"
-would generate error.
-
-
-The batch script would create a foler "output" in the directory containing your
-input files. The output folder will contain a "_NoS.gff" file for each input
-gff file and a "peak_statistics.txt" file containing the basic statistics for
-all the input files present in the directory. "peak_statistics.txt" has the
-same format as mentioned above.
-
+    - number of Peak-pair 
+    - number of peak-pair in relicates. 
+    - top_1pt_peak-pairs_in_replicates.
+    - top_5pt_peak-pairs_in_replicates. 
+    - top_10pt_peak-pairs_in_replicates.
+    - top_25pt_peak-pairs_in_replicates.
+    - top_50pt_peak-pairs_in_replicates.
+    - top_75pt_peak-pairs_in_replicates.
+    - top_100pt_peak-pairs_in_replicates.
+  
+   
 
 .. _Perl: http://www.perl.org/
 .. _Gff: http://genome.ucsc.edu/FAQ/FAQformat#format3
-~                                                                                                                                                                                                                                                                             
-
