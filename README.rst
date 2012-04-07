@@ -37,6 +37,11 @@ Unpack the source code archive. The folder contains the following::
 If you get more information on option then type this::
 
     $ perl  repmatch_stats.pl -h
+    $ Options: -k <path1>     path to the folder with key.txt and orphan.txt file. 
+    $          -i <path2>     path to the folder with S_*.gff files. 
+    $          -h             help
+
+
 
 Do a test run of the script by typing::
 
