@@ -28,8 +28,10 @@ my %orphan = ();
 while(<IN3>){
     chomp($_);
     next if($_ =~ /^chrom/);
+    $_ =~ s///g;
     my @cols = split(/\t/,$_);
     $orphan{$cols[0]."_".$cols[1]."_".$cols[2]."_".$cols[4]} = $cols[5];
+    #print $cols[0]."_".$cols[1]."_".$cols[2]."_".$cols[4]."\n";
     #$orphan{$cols[0]."_".$cols[1]."_".$cols[2]} = $cols[5];
     
 }
@@ -48,14 +50,19 @@ while(<IN>){
     while(<IN1>){
         chomp($_);
         next if($_ =~ /^#/);
-        $_ =~ s/^M//g;
+        $_ =~ s///g;
         my @vals = split(/\t/,$_);
         my @cwdist = split(/=/,$vals[8]);
         $peak_pairs{$vals[0]."_".$vals[3]."_".$vals[4]."_".$cwdist[1]} = $vals[5];
+        #print $cwdist[1];
+        #print $vals[0]."_".$vals[3]."_".$vals[4]."_".$cwdist[1]."\n";
         #$peak_pairs{$vals[0]."_".$vals[3]."_".$vals[4]} = $vals[5];
     
     }
-    
+    #while ( my($k,$v) = each %peak_pairs ) {
+    #print $k." => .".$v."\n";
+    #}
+    #exit;
     
     my ($quant_1_not_orphan,$pp1) = find_quantile(\%peak_pairs,1,$id);
     my ($quant_5_not_orphan,$pp5) = find_quantile(\%peak_pairs,5,$id);
@@ -72,7 +79,8 @@ while(<IN>){
 }
 
 sub find_quantile{
-    my($hash,$cutoff,$id) = @_;
+    my($hash) = shift;
+    my($cutoff,$id) = @_;
     my $length = scalar(keys %$hash);
     my $quant = int($length*($cutoff/100));
     my $count = 0;
@@ -80,18 +88,19 @@ sub find_quantile{
     if($quant == 0){
         return 0;
     }
-    foreach my $key (sort { $$hash {$b} <=> $$hash {$a}} keys %$hash )
+    
+    foreach my $key (sort { $$hash {$b} <=> $$hash {$a}} keys %$hash ) # Sorting done to get top x peak pairs.
     {
+        
         last if($count == $quant);
-        #print $key."\t".$$hash{$key}."\n";
         
         if(exists($orphan{$key}) && ($orphan{$key} == $id)){
-            $found_in_orphan++;
             
+            $found_in_orphan++;  
         }
         $count++;
     }
-    
+    #print $found_in_orphan."\n";
     my $pp_in_replicate = $quant - $found_in_orphan;
     return (($pp_in_replicate/$quant), $pp_in_replicate);
 }
