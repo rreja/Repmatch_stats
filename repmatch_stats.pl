@@ -77,6 +77,9 @@ sub find_quantile{
     my $quant = int($length*($cutoff/100));
     my $count = 0;
     my $found_in_orphan = 0;
+    if($quant == 0){
+        return 0;
+    }
     foreach my $key (sort { $$hash {$b} <=> $$hash {$a}} keys %$hash )
     {
         last if($count == $quant);
