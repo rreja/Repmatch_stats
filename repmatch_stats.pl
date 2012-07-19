@@ -3,7 +3,7 @@ use warnings;
 use Getopt::Std;
 
 my %opt;
-getopt('ki',\%opt);
+getopt('kd',\%opt);
 
 &help_message if (defined $opt{h});
 
@@ -11,7 +11,7 @@ getopt('ki',\%opt);
 my $keypath = $opt{'k'};
 $keypath = check_dir($keypath);
 #Ask the user to input the directory which contains the S_* files.
-my $pp_path = $opt{'i'};
+my $pp_path = $opt{'d'};
 $pp_path = check_dir($pp_path);
 
 open IN, $keypath."key.txt" || die "key.txt file not found. Please check your path has '/' at the end";
@@ -114,11 +114,11 @@ sub help_message {
     Usage:   repmatch_stats.pl -k <path_to_key.txt_file> -i <path_to_S_*_files>
 
     Options: -k <path1>     path to the folder with key.txt and orphan.txt file. 
-             -i <path2>     path to the folder with S_*.gff files. 
+             -d <path2>     path to the folder with S_*.gff files. 
              -h             help
 
     Example:
-      perl repmatch_stats.pl -k  /usr/local/folder -i /folder1/peakpairs
+      perl repmatch_stats.pl -k  /usr/local/folder -d /folder1/peakpairs
       
     Output:
     Produces a "repmatch_stats.tab" file in the folder that contains the  key.txt and orphan.txt files.
