@@ -1,4 +1,4 @@
-import sys, os, pybedtools
+import sys, os, pybedtools, math
 from optparse import OptionParser , IndentedHelpFormatter
 import numpy as np
 import matplotlib.pyplot as plt
@@ -20,39 +20,51 @@ def compare_all_by_all(files,sg07,comp,options):
         X = []
         i+=1
         for file2 in files:
-            print "Calculating actual overlap for "+ file1 +" and "+ file2
+            #print "Calculating actual overlap for "+ file1 +" and "+ file2
             z = calculate_overlap(file1,file2,sg07,comp,options)
             X.append(z)
         Z.insert(i,X)
     draw_heatmap(Z)
             
 def calculate_overlap(file1,file2,sg07,comp,options):
-    f1 = pybedtools.BedTool(file1)
-    c1 = f1.slop(g=sg07,l=options.down_distance,r=options.up_distance)
-    f2 = pybedtools.BedTool(file2)
-    c2 = f2.set_chromsizes(chrom)
-    observed_c1_and_f2 = c1.intersect(f2,u=True)
-    print observed_c1_and_f2.count()
-    ###results = c2.randomintersection(c1,options.iter,shuffle_kwargs={'excl':comp},debug=False,processes=3)
-    results = c2.randomstats(c1,iterations=options.iter,shuffle_kwargs={'chrom':True},debug=False)
+    ###c1 = pybedtools.BedTool(file1).slop(g=sg07,l=options.down_distance,r=options.up_distance)
+    ###c2 = pybedtools.BedTool(file2).set_chromsizes(chrom)
+    ###observed_c1_and_f2 = c1.intersect(f2,u=True)
+    ###print observed_c1_and_f2.count()
+    ###results = c2.randomstats(c1,iterations=options.iter,shuffle_kwargs={'excl':comp},debug=False,processes=3)
+    try:
+        results = pybedtools.BedTool(file2).set_chromsizes(chrom).randomstats(pybedtools.BedTool(file1).slop(g=sg07,l=options.down_distance,r=options.up_distance),iterations=options.iter,shuffle_kwargs={'chrom':True},debug=False,processes=4)
+    except ImportError:
+        print "Either Scipy or Numpy or pybedtool is not installed in your system!"
+    
     ###pvalue = calculate_emperical_pvalue(observed_c1_and_f2,results,options.iter)
+    #print results['actual']
     #print results['normalized']
-    glist.append(results['normalized'])
-    return(results['normalized'])
+    if math.isinf(results['normalized']):
+        glist.append(0)
+        return(0)
+        
+    else:
+        glist.append(results['normalized'])
+        return(results['normalized'])
+        
     
     
     
 def draw_heatmap(vals):
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    #bounds =  np.linspace(min(glist),max(glist),num=5)
-    #norm = cl.BoundaryNorm(bounds, ncolors=256, clip = False)
-    #ax.imshow(np.asarray(vals),cmap=cm.get_cmap('Reds'),norm=norm,interpolation='nearest')
-    pt = ax.imshow(np.asarray(vals),cmap=cm.get_cmap('Blues'),interpolation='nearest')
+    bounds =  np.linspace(min(glist),max(glist))
+    norm = cl.BoundaryNorm(bounds, ncolors=256, clip = False)
+    pt = ax.imshow(np.asarray(vals),cmap=cm.get_cmap('gist_rainbow'),norm=norm,interpolation='nearest')
+    #pt = ax.imshow(np.asarray(vals),cmap=cm.get_cmap('Blues'),vmin=min(glist),vmax=max(glist),interpolation='nearest')
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right",size="5%",pad=0.05)
-    plt.colorbar(pt,cax=cax)
+    plt.colorbar(pt,cax=cax,drawedges=False)
+    
     plt.savefig("testheatmap")
+    print "The matrix of enrichment scores"
+    print np.asarray(vals)
     
     
     
@@ -107,7 +119,7 @@ def run():
             
         if name.startswith('sg07'):
             sg07 = os.path.join(args[0], name)
-        if name.startswith('complement'):
+        if name.startswith('Around'):
             comp = os.path.join(args[0],name)
     compare_all_by_all(files,sg07,comp,options)
     
