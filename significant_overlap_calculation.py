@@ -21,7 +21,7 @@ chrom = {'chr1':(1, 230208),'chr2':(1, 813178),'chr3':(1, 316617),'chr4':(1, 153
 # sg07.txt conatining chromosome sizes.
 
     
-def compare_all_by_all(files,sg07,comp,options,outfile):
+def compare_all_by_all(files,sg07,options,outfile):
     Z = [] # The matrix of enrichment values
     i = 0
     nof = 0 # no of files in the folder aka..the order of matrix..3X3 oe 2X2 so on
@@ -35,12 +35,12 @@ def compare_all_by_all(files,sg07,comp,options,outfile):
         rect.append(patches.Patch())
         for file2 in files:
             #print "Calculating actual overlap for "+ file1 +" and "+ file2
-            z = calculate_overlap(file1,file2,sg07,comp,options)
+            z = calculate_overlap(file1,file2,sg07,options)
             X.append(z)
         Z.insert(i,X)
     draw_heatmap(Z,nof,labels,outfile,rect)
             
-def calculate_overlap(file1,file2,sg07,comp,options):
+def calculate_overlap(file1,file2,sg07,options):
     ###c1 = pybedtools.BedTool(file1).slop(g=sg07,l=options.down_distance,r=options.up_distance)
     ###c2 = pybedtools.BedTool(file2).set_chromsizes(chrom)
     ###observed_c1_and_f2 = c1.intersect(f2,u=True)
@@ -139,9 +139,10 @@ def run():
             files.append(fname)
         if name.startswith('sg07'):
             sg07 = os.path.join(args[0], name)
-        if name.startswith('Around'):
-            comp = os.path.join(args[0],name)
-    compare_all_by_all(files,sg07,comp,options,outfile)
+        #if name.startswith('Around'):
+        #    comp = os.path.join(args[0],name)
+    #compare_all_by_all(files,sg07,comp,options,outfile)
+    compare_all_by_all(files,sg07,options,outfile)
     
     
 if __name__ == "__main__":
