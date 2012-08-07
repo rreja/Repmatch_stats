@@ -41,13 +41,9 @@ def compare_all_by_all(files,sg07,options,outfile):
     draw_heatmap(Z,nof,labels,outfile,rect)
             
 def calculate_overlap(file1,file2,sg07,options):
-    ###c1 = pybedtools.BedTool(file1).slop(g=sg07,l=options.down_distance,r=options.up_distance)
-    ###c2 = pybedtools.BedTool(file2).set_chromsizes(chrom)
-    ###observed_c1_and_f2 = c1.intersect(f2,u=True)
-    ###print observed_c1_and_f2.count()
-    ###results = c2.randomstats(c1,iterations=options.iter,shuffle_kwargs={'excl':comp},debug=False,processes=3)
+    
     try:
-        results = pybedtools.BedTool(file2).set_chromsizes(chrom).randomstats(pybedtools.BedTool(file1).slop(g=sg07,l=options.down_distance,r=options.up_distance),iterations=options.iter,shuffle_kwargs={'chrom':True},debug=False,processes=4)
+        results = pybedtools.BedTool(file2).set_chromsizes(chrom).randomstats(pybedtools.BedTool(file1).slop(g=sg07,l=options.down_distance,r=options.up_distance),iterations=options.iter,shuffle_kwargs={'chrom':True})
     except ImportError:
         print "Either Scipy or Numpy or pybedtool is not installed in your system!"
     
@@ -55,15 +51,17 @@ def calculate_overlap(file1,file2,sg07,options):
     #print results['actual']
     
     pt95.append(results['upper_97.5th'])
-    #print results['lower_2.5th']
-    #print results['other']
     if math.isinf(results['normalized']):
         glist.append(0)
+        sys.stderr.flush()
         return(0)
+        
         
     else:
         glist.append(results['normalized'])
+        sys.stderr.flush()
         return(results['normalized'])
+    
         
     
     
