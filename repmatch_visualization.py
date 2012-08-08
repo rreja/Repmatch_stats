@@ -34,7 +34,7 @@ def run():
     ax.set_xlabel(xlab,fontsize=8)
     # Set the Y Axis label.
     ax.set_ylabel(ylab,fontsize=8)
-    col = ['r', 'g', 'b', 'c']
+    col = ['r', 'g', 'b', 'c','w','y']
     ind = numpy.arange(7)
     count = 0
     input = open(infile,'rt')
